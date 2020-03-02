@@ -1,78 +1,88 @@
 [![FIWARE Core Context Management](https://nexus.lab.fiware.org/repository/raw/public/badges/chapters/core.svg)](https://github.com/FIWARE/catalogue/blob/master/core/README.md)
 [![NGSI v2](https://img.shields.io/badge/NGSI-v2-blue.svg)](https://fiware-ges.github.io/orion/api/v2/stable/)
 
-**Description:** This tutorial teaches FIWARE users about batch commands and entity relationships. The tutorial builds
-on the data created in the previous [store finder example](getting-started.md) and creates and associates a series of
-related data entities to create a simple stock management system.
+**Descripción:** Este tutorial enseña a los usuarios de FIWARE los comandos por 
+lotes y las relaciones de entidad. El tutorial se basa en los datos creados en el 
+anterior [ejemplo del buscador de tiendas](getting-started.md) y crea y asocia una 
+serie de entidades de datos relacionados para crear un sencillo sistema de gestión 
+de existencias.
 
-The tutorial uses [cUrl](https://ec.haxx.se/) commands throughout, but is also available as
-[Postman documentation](https://fiware.github.io/tutorials.Entity-Relationships/).
+El tutorial usa comandos [cUrl](https://ec.haxx.se/) en el, pero también está disponible como
+[documentación Postman](https://fiware.github.io/tutorials.Getting-Started/)
 
-[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/0671934f64958d3200b3)
+[![Ejecutar en Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/0671934f64958d3200b3)
 
 <hr class="core"/>
 
-# Understanding Entities and Relationships
+# Entendiendo las entidades y las relaciones
 
-Within the FIWARE platform, the context of an entity represents the state of a physical or conceptural object which
-exists in the real world.
+Dentro de la plataforma FIWARE, el contexto de una entidad representa el estado de 
+un objeto físico o conceptual que existe en el mundo real.
 
-<h3>Entities within a stock management system</h3>
+<h3>Entidades de un sistema de gestión de stock</h3>
 
-For a simple stock management system, we will only need four types of entity. The relationship between our entities is
-defined as shown:
+Para un sistema de gestión de existencias simple, sólo necesitaremos cuatro tipos 
+de entidad. La relación entre nuestras entidades se define como se muestra:
 
 ![](https://fiware.github.io/tutorials.Entity-Relationships/img/entities.png)
 
--   A store is a real world bricks and mortar building. **Store** entities would have properties such as: + A name of
-    the store e.g. "Checkpoint Markt" + An address "Friedrichstraße 44, 10969 Kreuzberg, Berlin" + A phyiscal location
-    e.g. _52.5075 N, 13.3903 E_
--   A shelf is a real world device to hold objects which we wish to sell. Each **Shelf** entity would have properties
-    such as: + A name of the shelf e.g. "Wall Unit" + A phyiscal location e.g. _52.5075 N, 13.3903 E_ + A maximum
-    capacity + An association to the store in which the shelf is present
--   A product is defined as something that we sell - it is conceptural object. **Product** entities would have
-    properties such as: + A name of the product e.g. "Vodka" + A price e.g. 13.99 Euros + A size e.g. Small
--   An inventory item is another conceptural entity, used to assocate products, stores, shelves and physical objects.
-    **Inventory Item** entities would have properties such as: + An association to the product being sold + An
-    association to the store in which the product is being sold + An association to the shelf where the product is being
-    displayed + A stock count of the quantity of the product available in the warehouse + A stock count of the quantity
-    of the product available on the shelf
+- Una tienda es un edificio de ladrillos y mortero del mundo real. Las entidades
+  de tipo **tienda** o **Store** tendrían propiedades como: 
+    - Un nombre de la tienda, _"Punto de control Markt"_
+    - Una dirección, _"Friedrichstraße 44, 10969 Kreuzberg, Berlin"_
+    - Una ubicación física: _52.5075 N, 13.3903 E_
+- Un estante es un objeto del mundo real para guardar los objetos que queremos 
+  vender. Cada entidad de **Estante** o **Shelf** tendrá propiedades como:
+    - Un nombre de la estantería, por ejemplo, "Unidad de pared" 
+    - Un lugar fíisico, por ejemplo, _52.5075 N, 13.3903 E_ 
+    - Una capacidad máxima 
+    - Una asociación a la tienda en la que está presente el estante
+-   Un producto se define como algo que se vende - de forma conceptual. Las entidades de tipo **producto** o **Product** tendrán atributos como:
+    - Un nombre del producto, por ejemplo "Vodka". 
+    - Un precio, por ejemplo, 13,99 euros 
+    - Un tamaño, por ejemplo, pequeño
+-   Un articulo de inventario es otra entidad conceptual empleada para asociar productos, tiendas estantes y objetos físicos. Una entidad de **artículo de inventario** o **Inventory Item** tendría propiedades como: 
+    - Una asociación con el producto que se vende
+    - Una asociación a la tienda en la que se vende el producto 
+    - Una asociación con el estante donde se exhibe el producto 
+    - Un recuento de la cantidad de producto disponible en el almacén 
+    - Un recuento de la cantidad de producto disponible en la estantería
 
-As you can see, each of the entities defined above contain some properties which are liable to change. A product could
-change its price, stock could be sold and the shelf count of stock could be reduced and so on.
+Como puede ver, cada una de las entidades definidas anteriormente contienen 
+algunas propiedades que pueden cambiar. Un producto podría cambiar su precio, 
+las existencias podrían venderse y el número de existencias en las estanterías 
+podría reducirse y así sucesivamente.
 
-> **Note** this tutorial uses the following typographic styling :
+> **Nota** este tutorial utiliza el siguiente estilo tipográfico :
 >
-> -   Entity types have been made **bold text**
-> -   Data attributes are written in `monospace text`
-> -   Items in the real world use plain text
+> - Los tipos de entidades van en **texto en negrita**
+> - Los atributos de los datos se escriben en el "texto del monoespacio
+> - Los artículos en el mundo real usan texto simple
 >
-> Therefore a store in the real world is represented in the context data by a **Store** entity, and a real world shelf
-> found in a store is represented in the context data by a **Shelf** entity which has a `refStore` attribute.
+> Por lo tanto, una tienda en el mundo real está representada en los datos de contexto por una entidad de tipo **tienda** o **Store**, y un estante en el mundo 
+>real encontrado en una tienda es representado en los datos de contexto por una entidad **Shelf** que tiene un atributo `refStore`.
 
 ---
 
-# Architecture
+# Arquitectura
 
-This application will only make use of one FIWARE component - the
-[Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/). Usage of the Orion Context Broker (with proper
-context data flowing through it) is sufficient for an application to qualify as _“Powered by FIWARE”_.
+Nuestra aplicación de demostración sólo hará uso de un componente FIWARE - el
+[Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/). El uso del Orion Context Broker es suficiente
+para que una aplicación se califique como _"Powered by FIWARE"_.
 
-Currently, the Orion Context Broker relies on open source [MongoDB](https://www.mongodb.com/) technology to keep
-persistence of the context data it holds. Therefore, the architecture will consist of two elements:
+Actualmente, el Orion Context Broker se basa en la tecnología de código abierto [MongoDB](https://www.mongodb.com/) para la persistencia de los datos de contexto que contiene. Por lo tanto, la Arquitectura constará de dos elementos:
 
--   The [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/) which will receive requests using
+-   El [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/) quien recibirá las peticiones usando
     [NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2)
--   The underlying [MongoDB](https://www.mongodb.com/) database :
-    -   Used by the Orion Context Broker to hold context data information such as data entities, subscriptions and
-        registrations
+-   La base de datos que hay por debajo [MongoDB](https://www.mongodb.com/) :
+    -   Utilizada por el Orion Context Broker para mantener información de datos de contexto como los datos de las entidades, suscripciones y
+        registros
 
-Since all interactions between the two services are initiated by HTTP requests, the services can be containerized and
-run from exposed ports.
+Dado que todas las interacciones entre los dos elementos son iniciadas por peticiones HTTP, estos pueden ser contenedorizado sy correr desde los puertos expuestos.
 
 ![](https://fiware.github.io/tutorials.Entity-Relationships/img/architecture.png)
 
-The necessary configuration information can be seen in the services section of the associated `docker-compose.yml` file:
+La información de configuración necesaria se puede observar en la sección de servicios del fichero `docker-compose.yml` asociado:
 
 ```yaml
 orion:
@@ -104,27 +114,46 @@ mongo-db:
     command: --bind_ip_all --smallfiles
 ```
 
-Both containers are residing on the same network - the Orion Context Broker is listening on Port `1026` and MongoDB is
-listening on the default port `27071`. Both containers are also exposing the same ports externally - this is purely for
-the tutorial access - so that cUrl or Postman can access them without being part of the same network. The command-line
-initialization should be self explanatory.
+Ambos contenedores residen en la misma red - el Orion Context Broker está escuchando en el puerto "1026" y MongoDB está escuchando en el puerto por defecto "27071". Ambos contenedores también están exponiendo los mismos puertos externamente - esto es puramente para el acceso al tutorial - para que cUrl o Postman puedan acceder a ellos sin ser parte de la misma red. La inicialización de la línea de comandos debería ser autoexplicativa.
+
+## Prerequisitos
+
+### Docker
+
+Para mantener las cosas simples, ambos componentes se ejecutarán usando [Docker](https://www.docker.com). **Docker** es una tecnología de contenedores que permite aislar diferentes componentes en sus respectivos entornos.
+
+- Para instalar Docker en Windows siga las instrucciones [aquí](https://docs.docker.com/docker-for-windows/)
+- Para instalar Docker en Mac siga las instrucciones [aquí](https://docs.docker.com/docker-for-mac/)
+- Para instalar Docker en Linux siga las instrucciones [aquí](https://docs.docker.com/install/)
+
+### Docker Compose (Opcional)
+
+**Docker Compose** es una herramienta para definir y ejecutar aplicaciones Docker multi-contenedor. A
+Se utiliza el [archivo YAML](https://raw.githubusercontent.com/Fiware/tutorials.Getting-Started/master/docker-compose.yml) para configurar los servicios requeridos para la aplicación. Esto significa que todos los servicios de los contenedores pueden ser lanzados en un solo comando. Docker Compose se instala de forma predeterminada como parte de Docker para Windows y Docker para Mac, sin embargo los usuarios de Linux
+tendrá que seguir las instrucciones que se encuentran [aquí](https://docs.docker.com/compose/install/)
+
+Puede comprobar sus versiones actuales de **Docker** y **Docker Compose** usando los siguientes comandos:
+
+```bash
+docker-compose -v
+docker version
+```
+Por favor, asegúrese de que está utilizando la versión 18.03 o superior de Docker y la versión 1.21 o superior de Docker Compose y actualícela si es necesario.
 
 # Start Up
 
-All services can be initialised from the command-line by running the
-[services](https://github.com/FIWARE/tutorials.Entity-Relationships/blob/master/services) Bash script provided within
-the repository. Please clone the repository and create the necessary images by running the commands as shown:
+Todos los servicios pueden ser inicializados desde la línea de comandos ejecutando el bash script [services](https://github.com/FIWARE/tutorials.Entity-Relationships/blob/master/services) provisto dentro del repositorio. Por favor, clone el repositorio y cree las imágenes necesarias ejecutando los comandos como se muestra:
 
 ```bash
-git clone git@github.com:FIWARE/tutorials.Entity-Relationships.git
+git clone https://github.com:FIWARE/tutorials.Entity-Relationships.git
 cd tutorials.Entity-Relationships
 
 ./services start
 ```
 
-This command will also import seed data from the previous [Store Finder tutorial](getting-started.md) on startup.
+Este comando también importará datos de inicio del anterior tutorial de [Buscador de tiendas](getting-started.md) al iniciarse.
 
-> **Note:** If you want to clean up and start over again you can do so with the following command:
+> **Nota:** Si quieres borrar y empezar de nuevo puedes hacerlo con el siguiente comando:
 >
 > ```
 > ./services stop
@@ -132,19 +161,15 @@ This command will also import seed data from the previous [Store Finder tutorial
 
 ---
 
-# Creating and Associating Data Entities
+# Creación y asociación de entidades de datos
 
-## Creating Several Entities at Once
+## Creación de varias entidades a la vez
 
-In the previous tutorial, we created each **Store** entity individually,
+En el tutorial anterior, creamos cada entidad de tienda o **Store** de forma individual. Vamos a crear cinco unidades de estantes al mismo tiempo. Esta petición usa el extremo de la API de procesamiento por lotes para crear cinco entidades de estantes. El procesamiento por lotes utiliza el extremo de la API "v2/op/update" con mensaje con dos atributos: 
+- `actionType=APPEND`  que indica que vamos a sobrescribir las entidades si ya existen
+- `entities` que contiene el conjunto de entidades que queremos actualizar
 
-Lets create five shelf units at the same time. This request uses the convenience batch processing endpoint to create
-five shelf entities. Batch processing uses the `/v2/op/update` endpoint with a payload with two attributes -
-`actionType=APPEND` means we will overwrite existing entities if they exist whereas the `entities` attribute holds an
-array of entities we wish to update.
-
-To differenciate **Shelf** Entities from **Store** Entities, each shelf has been assigned `type=Shelf`. Real-world
-properties such as `name` and `location` have been added as properties to each shelf.
+Para diferenciar las entidades de tipo **estante** o **Shelf** de las **tiendas o Store**, a cada estante se le ha añadido `type=Shelf`. Las propiedades del mundo real como nombre `name` y la localización `location` se han añadido a las propiedades de cada estante.
 
 #### 1 Request:
 
@@ -219,9 +244,9 @@ curl -iX POST \
 }'
 ```
 
-Similarly, we can create a series of **Product** entities by using the `type=Product`.
+De forma similar, podemos crear una serie de entidades de produtos **Product** usando el modificador de tipo `type=Product`.
 
-#### 2 Request:
+#### 2 Petición:
 
 ```bash
 curl -iX POST \
@@ -282,8 +307,8 @@ curl -iX POST \
 }'
 ```
 
-In both cases we have encoded each entity `id` according to the NGSI-LD
-[specification](https://www.etsi.org/deliver/etsi_gs/CIM/001_099/009/01.01.01_60/gs_CIM009v010101p.pdf) - the proposal
+En ambos casos hemos codificado cada `id` de entidad de acuerdo con la 
+[especificación](https://www.etsi.org/deliver/etsi_gs/CIM/001_099/009/01.01.01_60/gs_CIM009v010101p.pdf) de NGSI-LD - the proposal
 is that each `id` is a URN follows a standard format: `urn:ngsi-ld:<entity-type>:<entity-id>`. This will mean that every
 `id` in the system will be unique.
 

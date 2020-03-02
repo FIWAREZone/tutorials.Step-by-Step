@@ -1,57 +1,67 @@
-# FIWARE Step-by-Step
+# FIWARE paso a paso
 
 [![Documentation](https://nexus.lab.fiware.org/repository/raw/public/badges/chapters/documentation.svg)](https://fiware-tutorials.rtfd.io)
 [![Support badge](https://nexus.lab.fiware.org/repository/raw/public/badges/stackoverflow/fiware.svg)](https://stackoverflow.com/questions/tagged/fiware)
 
-This is a collection of tutorials for the FIWARE system. Each tutorial consists of a series of exercises to demonstrate
-the correct use of individual FIWARE components and shows the flow of context data within a simple Smart Solution either
-by connecting to a series of dummy IoT devices or manipulating the context directly or programmatically.
+Esto es una colección de tutoriales para la plataforma FIWARE. Cada tutorial consiste en una serie de ejercicios para demostrar el correcto
+uso de componentes FIWARE individualmente, y mostrar el flujo del contexto con una solución Smart simple ya sea conectándose a una serie de 
+dispositivos de IoT simulados o manipulando el contexto directamente mediante algun código.
 
-<h3>How to Use</h3>
+## Créditos
 
-Each tutorial is a self contained learning exercise designed to teach the developer about a single aspect of FIWARE. A
-summary of the goal of the tutorial can be found in the description at the head of each page. Every tutorial is
-associated with a GitHub repository holding the configuration files needed to run the examples. Most of the tutorials
-build upon concepts or enablers described in previous exercises the to create a complex smart solution which is
-_"powered by FIWARE"_.
+ [![FIWARE Zone logo](https://raw.githubusercontent.com/FIWAREZone/misc/master/Group%400%2C2x.png)](www.fiware.zone)
 
-The tutorials are split according to the chapters defined within the
-[FIWARE catalog](https://www.fiware.org/developers/catalogue/) and are numbered in order of difficulty within each
-chapter hence the an introduction to a given enabler will occur before the full capabilities of that element are
-explored in more depth.
+ Este tutorial ha sido traducido por **FIWARE ZONE**, una iniciativa sin ánimo de lucro entre **Telefónica** y la **Junta de Andalucía** cuyo fin es la divulgación, promoción y difusión de la tecnología *FIWARE*, para hacer crecer el ecosistema y generar conocimiento y oportunidades a los desarrolladores y empresas andaluzas. **FIWARE ZONE**, como *iHub* de 3 estrellas ofrece servicios de alto nivel en formación, mentorización y consultoría de forma totalmente **gratuita**. Si necesitas cualquier tipo de ayuda o quieres contarnos tu proyecto, puedes ponerte en contacto con nostros a través de la direción [fiware.zone@fiware.zone](mailto:fiware.zone@fiware.zone), por nuestro [formulario web](https://fiware.zone/contacto/), en cualquiera de nuestras redes sociales o físicamente en [nuestros centros en Málaga y Sevilla](https://fiware.zone/contacto/)
 
-It is recommended to start with reading the full **Core Context Management: Fundamentals** Chapter before moving on to
-other subjects, as this will give you an fuller understanding of the role of context data in general. However it is not
-necessary to follow all the subsequent tutorials sequentially - as FIWARE is a modular system, you can choose which
-enablers are of interest to you.
+<a href="http://www.fiware.zone"><img src="https://badgen.net/badge/iHub/3%20stars/yellow" align="left"  height="30" style="border-right-style:solid; border-right-width:0px; border-color:transparent; background: transparent"></a>
 
-## Prerequisites
+[![Twitter](https://raw.githubusercontent.com/FIWAREZone/misc/master/twitter.png)](https://twitter.com/FIWAREZone) [![Linkedin](https://raw.githubusercontent.com/FIWAREZone/misc/master/linkedin.png)](https://www.linkedin.com/company/fiware-zone) [![Instagram](https://raw.githubusercontent.com/FIWAREZone/misc/master/instagram.png)](https://www.instagram.com/fiwarezone/) [![Github](https://raw.githubusercontent.com/FIWAREZone/misc/master/github.png)](https://github.com/FIWAREZone) [![Facebook](https://raw.githubusercontent.com/FIWAREZone/misc/master/facebook.png)](https://www.facebook.com/FIWAREZone/)
 
-### Docker and Docker Compose <img src="https://www.docker.com/favicon.ico" align="left"  height="30" width="30" style="border-right-style:solid; border-right-width:10px; border-color:transparent; background: transparent">
+<h3>Cómo usar</h3>
 
-To keep things simple all components will be run using [Docker](https://www.docker.com). **Docker** is a container
-technology which allows to different components isolated into their respective environments.
+Cada tutorial es un ejercicio de aprendizaje autocontenido diseñado para enseñar al desarrollador sobre un 
+único aspecto de FIWARE. Se puede encontrar un resumen del objetivo del tutorial en la descripción que aparece 
+en la cabecera de cada página. Cada tutorial está asociado con un repositorio GitHub que contiene los archivos 
+de configuración necesarios para ejecutar los ejemplos. La mayoría de los tutoriales se basan en conceptos o 
+enablers descritos en ejercicios anteriores para crear una solución compleja e inteligente que sea _"powered by FIWARE"_.
 
--   To install Docker on Windows follow the instructions [here](https://docs.docker.com/docker-for-windows/)
--   To install Docker on Mac follow the instructions [here](https://docs.docker.com/docker-for-mac/)
--   To install Docker on Linux follow the instructions [here](https://docs.docker.com/install/)
+Los tutoriales se dividen según los capítulos definidos en el [catálogo FIWARE](https://www.fiware.org/developers/catalogue/) 
+y están numerados por orden de dificultad dentro de cada capítulo, de ahí que la introducción a un determinado enabler 
+se produzca antes de que se exploren con mayor profundidad todas las capacidades de ese componente.
 
-**Docker Compose** is a tool for defining and running multi-container Docker applications. A series of `*.yaml` files
-are used configure the required services for the application. This means all container services can be brought up in a
-single command. Docker Compose is installed by default as part of Docker for Windows and Docker for Mac, however Linux
-users will need to follow the instructions found [here](https://docs.docker.com/compose/install/)
+Se recomienda comenzar con la lectura completa de **Core Context Management: Fundamentos** antes de pasar a otros temas, 
+ya que esto le dará una comprensión más completa del papel de los datos de contexto en general. Sin embargo, no es necesario 
+seguir todos los tutoriales posteriores en orden - ya que FIWARE es un sistema modular, puede elegir los módulos que más le interesen.
 
-You can check your current **Docker** and **Docker Compose** versions using the following commands:
+## Prerequisitos
 
-```bash
+### Docker y Docker Compose <img src="https://www.docker.com/favicon.ico" align="left"  height="30" width="30" style="border-right-style:solid; border-right-width:10px; border-color:transparent; background: transparent">
+
+Cada tutorial ejecuta todos los componentes empleando [Docker](https://www.docker.com). **Docker** **Docker** es una tecnología de contenedores que 
+permite aislar diferentes componentes en sus respectivos entornos.
+
+-   Para instalar Docker en Windows siga las instrucciones [aquí](https://docs.docker.com/docker-for-windows/)
+-   Para instalar Docker en Mac siga las instrucciones [aquí](https://docs.docker.com/docker-for-mac/)
+-   Para instalar Docker en Linux siga las instrucciones [aquí](https://docs.docker.com/install/)
+
+**Docker Compose** es una herramienta para definir y ejecutar aplicaciones Docker multi-contenedor. A
+Se utiliza el [archivo YAML](https://raw.githubusercontent.com/Fiware/tutorials.Getting-Started/master/docker-compose.yml) para configurar los 
+servicios requeridos para la aplicación. Esto significa que todos los servicios de los contenedores pueden ser lanzados en un solo comando. 
+Docker Compose se instala de forma predeterminada como parte de Docker para Windows y Docker para Mac, sin embargo los usuarios de Linux
+tendrá que seguir las instrucciones que se encuentran [aquí](https://docs.docker.com/compose/install/)
+
+Puede comprobar sus versiones actuales de **Docker** y **Docker Compose** usando los siguientes comandos:
+
+```console
 docker-compose -v
 docker version
 ```
 
-Please ensure that you are using Docker version 18.03 or higher and Docker Compose 1.21 or higher and upgrade if
-necessary.
+Por favor, asegúrese de que está utilizando la versión 18.03 o superior de Docker y 
+la versión 1.21 o superior de Docker Compose y actualícela si es necesario.
 
-If using a linux distro with an outdated docker-compose, the files can be installed directly as shown:
+Si está usando una distribución Linux con una versión desactualizada de 
+docker-compose, los ficheros se pueden istalar como se indica a continuación:
 
 ```bash
 sudo curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -60,24 +70,22 @@ sudo chmod +x /usr/local/bin/docker-compose
 
 ### Postman <img src="https://www.getpostman.com/favicon.ico" align="left"  height="30" width="30" style="border-right-style:solid; border-right-width:10px; border-color:transparent; background: transparent">
 
-The tutorials which use HTTP requests supply a collection for use with the Postman utility. Postman is a testing
-framework for REST APIs. The tool can be downloaded from [www.getpostman.com](www.getpostman.com). All the FIWARE
-Postman collections can downloaded directly from the
-[Postman API network](https://explore.postman.com/team/3mM5EY6ChBYp9D)
+Los tutoriales que usan peticciones HTTP proveen de una colección para utilizar con la utilidad Postman. Postman es una utilidad de 
+pruebas para APIs REST. La herrmienta se puede descargar desde [www.getpostman.com](www.getpostman.com). Todas las colecciones FIWARE de
+Postman se pueden descargar directamente desde [Postman API network](https://explore.postman.com/team/3mM5EY6ChBYp9D)
 
-### Cygwin for Windows <img src="https://www.cygwin.com/favicon.ico" align="left"  height="30" width="30" style="border-right-style:solid; border-right-width:10px; border-color:transparent; background: transparent">
+### Cygwin para Windows <img src="https://www.cygwin.com/favicon.ico" align="left"  height="30" width="30" style="border-right-style:solid; border-right-width:10px; border-color:transparent; background: transparent">
 
-We will start up our services using a simple Bash script. Windows users should download [cygwin](http://www.cygwin.com/)
-to provide a command-line functionality similar to a Linux distribution on Windows.
+En los tutoriales se inician los servicios empleando un script de Bash. Los usuarios de windows deben descargar [cygwin](http://www.cygwin.com/)
+para proveer de una línea de comandos similar a las de las distribuciones Linux en Windows.
 
 ### Apache Maven <img src="https://maven.apache.org/favicon.ico" align="left"  height="30" width="30" style="border-right-style:solid; border-right-width:10px; border-color:transparent; background: transparent">
 
-[Apache Maven](https://maven.apache.org/download.cgi) is a software project management and comprehension tool. Based on
-the concept of a project object model (POM), Maven can manage a project's build, reporting and documentation from a
-central piece of information. Maven can be used to define and download our dependencies and to build and package Java or
-Scala code into a JAR file.
+[Apache Maven](https://maven.apache.org/download.cgi) es una herramienta de gestión de proyectos software. 
+Está basada en el concepto de un Modelo de objeto de proyecto (POM). Puede gestionar la compilación, el 
+reporte y la documentación desde un solo lugar. Se puede usar para definir y descargar las dependencias y compilar y empaquetar código Java o Scala en un fichero JAR.
 
-## List of Tutorials
+## Lista de tutoriales
 
 <h3 style="box-shadow: 0px 4px 0px 0px #233c68;">Core Context Managment: Fundamentals</h3>
 

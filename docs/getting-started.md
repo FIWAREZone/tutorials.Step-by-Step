@@ -1,61 +1,63 @@
 [![FIWARE Core Context Management](https://nexus.lab.fiware.org/repository/raw/public/badges/chapters/core.svg)](https://github.com/FIWARE/catalogue/blob/master/core/README.md)
 [![NGSI v2](https://img.shields.io/badge/NGSI-v2-blue.svg)](https://fiware-ges.github.io/orion/api/v2/stable/)
 
-**Description:** This is an Introductory Tutorial to the FIWARE Platform. We will start with the data from a supermarket
-chain’s store finder and create a very simple _“Powered by FIWARE”_ application by passing in the address and location
-of each store as context data to the FIWARE context broker.
+**Description:** Este es un Tutorial Introductorio a la Plataforma FIWARE. Empezaremos con los datos del buscador de tiendas de una cadena de supermercados 
+y crearemos una aplicación muy sencilla _"Powered by FIWARE"_ pasando la dirección y ubicación de cada tienda 
+como datos de contexto al agente de contexto FIWARE.
 
-The tutorial uses [cUrl](https://ec.haxx.se/) commands throughout, but is also available as
-[Postman documentation](https://fiware.github.io/tutorials.Getting-Started/)
+El tutorial usa comandos [cUrl](https://ec.haxx.se/) en el, pero también está disponible como
+[documentación Postman](https://fiware.github.io/tutorials.Getting-Started/)
 
-[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/d6671a59a7e892629d2b)
+[![Ejecutar en Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/d6671a59a7e892629d2b)
 
 <hr class="core"/>
 
-# Architecture
+# Arquitectura
+Nuestra aplicación de demostración sólo hará uso de un componente FIWARE - el
+[Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/). El uso del Orion Context Broker es suficiente
+para que una aplicación califique como _"Powered by FIWARE"_.
 
-Our demo application will only make use of one FIWARE component - the
-[Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/). Usage of the Orion Context Broker (with proper
-context data flowing through it) is sufficient for an application to qualify as _“Powered by FIWARE”_.
+Actualmente, el Orion Context Broker se basa en la tecnología de código abierto [MongoDB](https://www.mongodb.com/) para la persistencia de los datos de contexto que contiene. Por lo tanto, la Arquitectura constará de dos elementos:
 
-Currently, the Orion Context Broker relies on open source [MongoDB](https://www.mongodb.com/) technology to keep
-persistence of the context data it holds. Therefore, the architecture will consist of two elements:
-
--   The [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/) which will receive requests using
+-   El [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/) quien recibirá las peticiones usando
     [NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2)
--   The underlying [MongoDB](https://www.mongodb.com/) database :
-    -   Used by the Orion Context Broker to hold context data information such as data entities, subscriptions and
-        registrations
+-   La base de datos que hay por debajo [MongoDB](https://www.mongodb.com/) :
+    -   Utilizada por el Orion Context Broker para mantener información de datos de contexto como los datos de las entidades, suscripciones y
+        registros
 
-Since all interactions between the two services are initiated by HTTP requests, the services can be containerized and
-run from exposed ports.
+Dado que todas las interacciones entre los dos elementos son iniciadas por peticiones HTTP, estos pueden ser contenedorizado sy correr desde los puertos expuestos.
 
 ![](https://fiware.github.io/tutorials.Getting-Started/img/architecture.png)
 
-## Prerequisites
+## Prerequisitos
 
 ### Docker
 
-To keep things simple both components will be run using [Docker](https://www.docker.com). **Docker** is a container
-technology which allows to different components isolated into their respective environments.
+Para mantener las cosas simples, ambos componentes se ejecutarán usando [Docker](https://www.docker.com). **Docker** es una tecnología de contenedores que permite aislar diferentes componentes en sus respectivos entornos.
 
--   To install Docker on Windows follow the instructions [here](https://docs.docker.com/docker-for-windows/)
--   To install Docker on Mac follow the instructions [here](https://docs.docker.com/docker-for-mac/)
--   To install Docker on Linux follow the instructions [here](https://docs.docker.com/install/)
+- Para instalar Docker en Windows siga las instrucciones [aquí](https://docs.docker.com/docker-for-windows/)
+- Para instalar Docker en Mac siga las instrucciones [aquí](https://docs.docker.com/docker-for-mac/)
+- Para instalar Docker en Linux siga las instrucciones [aquí](https://docs.docker.com/install/)
 
-### Docker Compose (Optional)
+### Docker Compose (Opcional)
 
-**Docker Compose** is a tool for defining and running multi-container Docker applications. A
-[YAML file](https://raw.githubusercontent.com/Fiware/tutorials.Getting-Started/master/docker-compose.yml) is used
-configure the required services for the application. This means all container services can be brought up in a single
-command. Docker Compose is installed by default as part of Docker for Windows and Docker for Mac, however Linux users
-will need to follow the instructions found [here](https://docs.docker.com/compose/install/)
+**Docker Compose** es una herramienta para definir y ejecutar aplicaciones Docker multi-contenedor. A
+Se utiliza el [archivo YAML](https://raw.githubusercontent.com/Fiware/tutorials.Getting-Started/master/docker-compose.yml) para configurar los servicios requeridos para la aplicación. Esto significa que todos los servicios de los contenedores pueden ser lanzados en un solo comando. Docker Compose se instala de forma predeterminada como parte de Docker para Windows y Docker para Mac, sin embargo los usuarios de Linux
+tendrá que seguir las instrucciones que se encuentran [aquí](https://docs.docker.com/compose/install/)
 
-## Starting the containers
+Puede comprobar sus versiones actuales de **Docker** y **Docker Compose** usando los siguientes comandos:
 
-### Option 1) Using Docker commands directly
+```bash
+docker-compose -v
+docker version
+```
+Por favor, asegúrese de que está utilizando la versión 18.03 o superior de Docker y la versión 1.21 o superior de Docker Compose y actualícela si es necesario.
 
-First pull the necessary Docker images from Docker Hub and create a network for our containers to connect to:
+## Iniciando los contenedores
+
+### Opcion 1) Usando los comandos de Docker directamente
+
+Primero haga pull de las imágenes necesarias de Docker Hub y cree una red para que nuestros contenedores se conecten a ella:
 
 ```bash
 docker pull mongo:3.6
@@ -63,22 +65,21 @@ docker pull fiware/orion
 docker network create fiware_default
 ```
 
-A Docker container running a [MongoDB](https://www.mongodb.com/) database can be started and connected to the network
-with the following command:
+Para iniciar un contenedor Docker corriendo una base de datos [MongoDB](https://www.mongodb.com/) conectada a la red tenemos que ejecutar el siguiente comando:
 
 ```bash
 docker run -d --name=mongo-db --network=fiware_default \
   --expose=27017 mongo:3.6 --bind_ip_all --smallfiles
 ```
 
-The Orion Context Broker can be started and connected to the network with the following command:
+El Orion Context Broker se puede iniciar y conectar a la red empleando el siguiente comando:
 
 ```bash
 docker run -d --name fiware-orion -h orion --network=fiware_default \
   -p 1026:1026  fiware/orion -dbhost mongo-db
 ```
 
-> **Note:** If you want to clean up and start again you can do so with the following commands
+> **Nota:** Si desea limpiar el entorno y empezar de nuevo puede hacerlo con los siguientes comandos:
 >
 > ```
 > docker stop fiware-orion
@@ -88,40 +89,40 @@ docker run -d --name fiware-orion -h orion --network=fiware_default \
 > docker network rm fiware_default
 > ```
 
-### Option 2) Using Docker Compose
+### Opcion 2) Usando Docker Compose
 
-All services can be initialised from the command-line using the `docker-compose` command. Please clone the repository
-and create the necessary images by running the commands as shown:
+Todos los servicios pueden ser inicializados desde la línea de comandos usando el comando "docker-compose". Por favor, clone el repositorio y cree las imágenes necesarias ejecutando los comandos como se muestra:
 
 ```bash
-git clone git@github.com:FIWARE/tutorials.Getting-Started.git
+git clone https://github.com/FIWARE/tutorials.Getting-Started.git
 cd tutorials.Getting-Started
 
 docker-compose -p fiware up -d
 ```
 
-> **Note:** If you want to clean up and start again you can do so with the following command:
+> **Nota:** Si desea limpiar el entorno y empezar de nuevo puede hacerlo con los siguientes comandos:
 >
 > ```
 > docker-compose -p fiware down
 > ```
 
-## Creating your first "Powered by FIWARE" app
 
-### Checking the service health
+## Creando tu primera Powered by FIWARE app
 
-You can check if the Orion Context Broker is running by making an HTTP request to the exposed port:
+### Comprobando la salud del servicio
 
-#### 1 Request:
+Puede comprobar si el Orion Context Broker se está ejecutando haciendo una petición HTTP al puerto expuesto:
+
+#### 1 Peticion:
 
 ```bash
 curl -X GET \
   'http://localhost:1026/version'
 ```
 
-#### Response:
+#### Respuesta:
 
-The response will look similar to the following:
+La respuesta debe parecerse a la siguiente:
 
 ```json
 {
@@ -138,47 +139,41 @@ The response will look similar to the following:
 }
 ```
 
-> **What if I get a `Failed to connect to localhost port 1026: Connection refused` Response?**
+ **Que pasa si obtengo `Failed to connect to localhost port 1026: Connection refused` como respuesta?**
 >
-> If you get a `Connection refused` response, the Orion Content Broker cannot be found where expected for this
-> tutorial - you will need to substitute the URL and port in each cUrl command with the corrected IP address. All the
-> cUrl commands tutorial assume that orion is available on `localhost:1026`.
+> Si recibes una respuesta `Connection refused`, el Orion Content Broker no se puede encontrar donde se espera para este tutorial - necesitas sustituir la URL y el puerto en cada comando cUrl con la dirección IP correcta. Todos los comandos cUrl de este tutorial suponen que Orion está disponible en `localhost:1026`
+> Prueba las siguientes soluciones:
 >
-> Try the following remedies:
->
-> -   To check that the docker containers are running try the following:
+> -   Para comprobar si los contenedores de docker están corriendo pruebe lo siguiente
 >
 > ```
 > docker ps
 > ```
 >
-> You should see two containers running. If orion is not running, you can restart the containers as necessary. This
-> command will also display open port information.
+> Tendría que ver los dos contenedores corriendo. Si Orion no está corriendo, puede reiniciar los contenedores si es necesario.
+> Este comando también mostrará la información de los puertos abiertos
 >
-> -   If you have installed [`docker-machine`](https://docs.docker.com/machine/) and
->     [Virtual Box](https://www.virtualbox.org/), the orion docker container may be running from another IP address -
->     you will need to retrieve the virtual host IP as shown:
+> -   Si tiene instalado  [`docker-machine`](https://docs.docker.com/machine/) y
+>     [Virtual Box](https://www.virtualbox.org/), el contenedor de docker de orio quizás corra en otra direccion IP - Con el siguiente comando podrá obtener la IP del host:
 >
 > ```
 > curl -X GET \
 >  'http://$(docker-machine ip default):1026/version'
 > ```
 >
-> Alternatively run all your cUrl commands from within the container network:
+> De forma alternativa, ejecute todos los comandos cUrl desde la red de los contenedores:
 >
 > ```
 > docker run --network fiware_default --rm appropriate/curl -s \
 >  -X GET 'http://orion:1026/version'
 > ```
 
-## Creating Context Data
+## Creando datos de contexto
 
-At its heart, FIWARE is a system for managing context information, so lets add some context data into the system by
-creating two new entities (stores in **Berlin**). Any entity must have a `id` and `type` attributes, additional
-attributes are optional and will depend on the system being described. Each additional attribute should also have a
-defined `type` and a `value` attribute.
+En el fondo, FIWARE es un sistema de gestión de información contextual, por lo que permite añadir algunos datos contextuales al sistema mediante
+creando dos nuevas entidades (tiendas en **Berlin**). Cualquier entidad debe tener un `id` y atributos de tipo `type`, los atributos adicionales son opcionales y dependerán del sistema que se describa. Cada atributo adicional debe tener también un tipo definido y un atributo de valor.
 
-#### 2 Request:
+#### 2 Petición:
 
 ```bash
 curl -iX POST \
@@ -217,9 +212,9 @@ curl -iX POST \
 }'
 ```
 
-#### 3 Request:
+#### 3 Petición:
 
-Each subsequent entity must have a unique `id` for the given `type`
+Cada entidad siguiente debe tener un "id" único para el "tipo" dado.
 
 ```bash
 curl -iX POST \
@@ -258,94 +253,83 @@ curl -iX POST \
 }'
 ```
 
-### Data Model Guidelines
+### Directrices de los modelos de datos
 
-Although the each data entity within your context will vary according to your use case, the common structure within each
-data entity should be standardized order to promote reuse. The full FIWARE data model guidelines can be found
-[here](https://fiware-datamodels.readthedocs.io/en/latest/guidelines/index.html). This tutorial demonstrates the usage
-of the following recommendations:
+Aunque cada entidad de datos dentro de su contexto variará según su caso de uso, la estructura común dentro de cada entidad de datos debe ser estandarizada para promover la reutilización. Las directrices completas de los modelos de datos de FIWARE se pueden encontrar
+[aquí](https://fiware-datamodels.readthedocs.io/en/latest/guidelines/index.html). Este tutorial demuestra el uso
+de las siguientes recomendaciones:
 
-#### All terms are defined in American English
+#### Todos los terminos están definidos en inglés americano
 
-Although the `value` fields of the context data may be in any language, all attributes and types are written using the
-English language.
+Aunque los campos `value` de los datos de contexto pueden estar en cualquier idioma, todos los atributos y tipos se escriben usando el idioma inglés.
 
-#### Entity type names must start with a Capital letter
+####  Los nombres de los tipos de entidad deben comenzar con una letra mayúscula
+En este caso sólo tenemos un tipo de entidad - **Store**
 
-In this case we only have one entity type - **Store**
+#### Los ID de las entidades deben ser una URN siguiendo las directrices de NGSI-LD
 
-#### Entity IDs should be a URN following NGSI-LD guidelines
+NGSI-LD ha sido recientemente publicado como una [especificación](https://www.etsi.org/deliver/etsi_gs/CIM/001_099/009/01.01.01_60/gs_CIM009v010101p.pdf)
+completa de la ETSI, la propuesta es que cada `id` es una URN que sigue un formato estándar: `urn:ngsi-ld:<entity-type>:<entity-id>`. Esto significará 
+que cada `id` en el sistema será único.
 
-NGSI-LD has recently been published as a full ETSI
-[specification](https://www.etsi.org/deliver/etsi_gs/CIM/001_099/009/01.01.01_60/gs_CIM009v010101p.pdf), the proposal is
-that each `id` is a URN follows a standard format: `urn:ngsi-ld:<entity-type>:<entity-id>`. This will mean that every
-`id` in the system will be unique
+#### Los nombres de los tipos de datos deben reutilizar los tipos de datos de schema.org siempre que sea posible
 
-#### Data type names should reuse schema.org data types where possible
+[Schema.org](http://schema.org/) es una iniciativa para crear esquemas de datos estructurados comunes. Para promover la reutilización hemos utilizado
+ deliberadamente el los tipos de atributo [`Text`](http://schema.org/PostalAddress) y
+[`PostalAddress`](http://schema.org/PostalAddress) con nuestra entidad **Store** . Otros estándares existentes como [Open311](http://www.open311.org/) 
+(para el seguimiento de problemas de ciudad) o [Datex II](https://datex2.eu/) (para sistemas de tranposte) tambine pueden ser usado, pero la clave es 
+comprobar la existencia de el mismo atributo en modelos de datos existentes y reusarlo.
 
-[Schema.org](http://schema.org/) is an initiative to create common structured data schemas. In order to promote reuse we
-have deliberately used the [`Text`](http://schema.org/PostalAddress) and
-[`PostalAddress`](http://schema.org/PostalAddress) type names within our **Store** entity. Other existing standards such
-as [Open311](http://www.open311.org/) (for civic issue tracking) or [Datex II](https://datex2.eu/) (for transport
-systems) can also be used, but the point is to check for the existence of the same attribute on existing data models and
-reuse it.
+#### Uso de la sintaxis camel case para el nombre de los atributos
 
-#### Use camel case syntax for attribute names
-
-The `streetAddress`, `addressRegion`, `addressLocality` and `postalCode` are all examples of attributes using camel
-casing
+Los atributos `streetAddress`, `addressRegion`, `addressLocality` y`postalCode` son todos ejemplo del uso de camel case.
 
 #### Location information should be defined using `address` and `location` attributes
 
--   We have used an `address` attribute for civic locations as per [schema.org](http://schema.org/)
--   We have used a `location` attribute for geographical coordinates.
+-   Hemos usado un atributo `address` para las direcciones civiles definido por [schema.org](http://schema.org/)
+-   Hemos usado el atributo `location` para las coordenadas geográficas.
 
-#### Use GeoJSON for codifying geospatial properties
+#### Uso de GeoJSON para codificar propiedades geoespaciales
 
-[GeoJSON](http://geojson.org) is an open standard format designed for representing simple geographical features. The
-`location` attribute has been encoded as a geoJSON `Point` location.
+[GeoJSON](http://geojson.org) es un formato estándar abierto diseñado para representar elementos geográficos simples. El atributo 
+`location` ha sido condificado como un elemento geoJSON de tipo punto `Point`.
 
-### Attribute Metadata
+### Metadatos de atributos
 
-Metadata is _"data about data"_, it is additional data to describe properties of the attribute value itself like
-accuracy, provider, or a timestamp. Several built-in metadata attribute already exist and these names are reserved
+Los metadatos son _"datos acerca de los datos"_, son información adicional usada para describir propiedades de los valores de los atributos 
+como precisión, proveedor del dato, o marca temporal. Existen diveros accuracy, provider, or a timestamp. Ya existen varios atributos de 
+metadatos predefinidos y sus nombres están reservados:
 
--   `dateCreated` (type: DateTime): attribute creation date as an ISO 8601 string.
--   `dateModified` (type: DateTime): attribute modification date as an ISO 8601 string.
--   `previousValue` (type: any): only in notifications. The value of this
--   `actionType` (type: Text): only in notifications.
+-   `dateCreated` (tipo: DateTime): Fecha de creación del atributo como un string ISO 8601.
+-   `dateModified` (tipo: DateTime): fecha de modificación del atributo como un string ISO 8601.
+-   `previousValue` (tipo: cualquiera): sólo en las notificaciones. El valor anterior
+-   `actionType` (tipo: Text): sólo en las notificaciones.
 
-One element of metadata can be found within the `address` attribute. a `verified` flag indicates whether the address has
-been confirmed.
+Un metadato que se puede encontrar en atributos de tipo `address`. es `verified` que indica cuando la dirección se ha confirmado
 
-## Querying Context Data
+## Consultando datos de contexto
 
-A consuming application can now request context data by making HTTP requests to the Orion Context Broker. The existing
-NGSI interface enables us to make complex queries and filter results.
+Una aplicación puede solicitar datos de contexto haciendo peticiones HTTP al Orion Context Broker. La interfaz NGSI existente nos permite hacer consultas complejas y filtrar los resultados.
 
-At the moment, for the store finder demo all the context data is being added directly via HTTP requests, however in a
-more complex smart solution, the Orion Context Broker will also retrieve context directly from attached sensors
-associated to each entity.
+En este momento, para la demostración del buscador de tiendas, todos los datos de contexto se han añadido directamente a través de peticiones HTTP, sin embargo, en una solución inteligente más compleja, el Orion Context Broker también puede recuperar el contexto directamente de los sensores adjuntos asociados a cada entidad.
 
-Here are a few examples, in each case the `options=keyValues` query parameter has been used shorten the responses by
-stripping out the type elements from each attribute
+Aquí hay algunos ejemplos, en cada caso se ha utilizado el parámetro de consulta `options=keyValues` para acortar las respuestas quitando los elementos de tipo de cada atributo
 
-### Obtain entity data by ID
+### Obteniendo datos de la entidad por ID
 
-This example returns the data of `urn:ngsi-ld:Store:001`
+Este ejemplo devuelve los datos de `urn:ngsi-ld:Store:001`
 
-#### 4 Request:
+#### 4 Petición:
 
-```bash
+```console
 curl -G -X GET \
    'http://localhost:1026/v2/entities/urn:ngsi-ld:Store:001' \
    -d 'options=keyValues'
 ```
 
-#### Response:
+#### Respuesta:
 
-Because of the use of the `options=keyValues`, the response consists of JSON only without the attribute `type` and
-`metadata` elements.
+Debido al uso del modificador `options=keyValues`, la respuesta consta solo de un JSON sin los attributos `type` y sin elementos `metadata`.
 
 ```json
 {
@@ -365,12 +349,12 @@ Because of the use of the `options=keyValues`, the response consists of JSON onl
 }
 ```
 
-### Obtain entity data by type
+### OObteniendo datos de la entidad por tipo
 
-This example returns the data of all `Store` entities within the context data The `type` parameter limits the response
-to store entities only.
+Este ejemplo devuelve el dato de todas las entidades `Store` con sus datos de contexto. El parámetro `type` limita la 
+respuesta sólo a las entidades de tipo tienda
 
-#### 5 Request:
+#### 5 Petición:
 
 ```bash
 curl -G -X GET \
@@ -379,10 +363,9 @@ curl -G -X GET \
     -d 'options=keyValues'
 ```
 
-#### Response:
+#### Respuesta:
 
-Because of the use of the `options=keyValues`, the response consists of JSON only without the attribute `type` and
-`metadata` elements.
+Debido al uso del modificador `options=keyValues`, la respuesta consta solo de un JSON sin los attributos `type` y sin elementos `metadata`.
 
 ```json
 [
@@ -419,12 +402,11 @@ Because of the use of the `options=keyValues`, the response consists of JSON onl
 ]
 ```
 
-### Filter context data by comparing the values of an attribute
+### Filtrando datos de contexto comparando los valores de los atributos
 
-This example returns all stores with the `name` attribute _Checkpoint Markt_. Filtering can be done using the `q`
-parameter - if a string has spaces in it, it can be URL encoded and held within single quote characters `'` = `%27`
+Este ejemplo devuelve todos las tiendas con el atributo `name` con el valor _Checkpoint Markt_. Se puede filtrar usando el parámetro `q` - si una cadena tiene espacios en el, se puede condificar en URL y mantenerse entre comillas simples `'` = `%27`
 
-#### 6 Request:
+#### 6 Petición:
 
 ```bash
 curl -G -X GET \
@@ -434,10 +416,9 @@ curl -G -X GET \
     -d 'options=keyValues'
 ```
 
-#### Response:
+#### Respuesta:
 
-Because of the use of the `options=keyValues`, the response consists of JSON only without the attribute `type` and
-`metadata` elements.
+Debido al uso del modificador `options=keyValues`, la respuesta consta solo de un JSON sin los attributos `type` y sin elementos `metadata`.
 
 ```json
 [
@@ -459,14 +440,14 @@ Because of the use of the `options=keyValues`, the response consists of JSON onl
 ]
 ```
 
-### Filter context data by comparing the values of a sub-attribute
+### Filtrar datos de contexto comparando valores de un sub-atributo 
 
-This example returns all stores found in the Kreuzberg District.
+Este ejemplo devuelve todas las tiendas encontradas en Kreuzberg District.
 
-Filtering can be done using the `q` parameter - sub-attributes are annotated using the dot syntax e.g.
-`address.addressLocality`
+El filtrado se puede hacer usando el parámetro `q` - los sub-atributos Los sub-atributos se apuntan usando la sintaxis 
+de puntos, por ejemplo, `address.addressLocality`
 
-#### 7 Request:
+#### 7 Petición:
 
 ```bash
 curl -G -X GET \
@@ -476,10 +457,9 @@ curl -G -X GET \
     -d 'options=keyValues'
 ```
 
-#### Response:
+#### Respuesta:
 
-Because of the use of the `options=keyValues`, the response consists of JSON only without the attribute `type` and
-`metadata` elements.
+Debido al uso del modificador `options=keyValues`, la respuesta consta solo de un JSON sin los attributos `type` y sin elementos `metadata`.
 
 ```json
 [
@@ -501,13 +481,13 @@ Because of the use of the `options=keyValues`, the response consists of JSON onl
 ]
 ```
 
-### Filter context data by querying metadata
+### Filtrar datos de contexto buscando por metadato
 
-This example returns the data of all `Store` entities with a verified address.
+Este ejemplo devuelve todos los datos de las entidades `Store` con la dirección verificada.
 
-Metadata queries can be made using the `mq` parameter.
+Las búsquedas por metadatos se pueden usar empleando el parámetro `mq`.
 
-#### 8 Request:
+#### 8 Petición:
 
 ```bash
 curl -G -X GET \
@@ -517,10 +497,9 @@ curl -G -X GET \
     -d 'options=keyValues'
 ```
 
-#### Response:
+#### Respuesta:
 
-Because of the use of the `options=keyValues`, the response consists of JSON only without the attribute `type` and
-`metadata` elements.
+Debido al uso del modificador `options=keyValues`, la respuesta consta solo de un JSON sin los attributos `type` y sin elementos `metadata`.
 
 ```json
 [
@@ -557,11 +536,11 @@ Because of the use of the `options=keyValues`, the response consists of JSON onl
 ]
 ```
 
-### Filter context data by comparing the values of a geo:json attribute
+### Filtrando datos de contexto comparando los valores de un atributo geo:json
 
-This example return all Stores within 1.5km the **Brandenburg Gate** in **Berlin** (_52.5162N 13.3777W_)
+Este ejemplo devuelve todas las tiendas a 1.5Km de distancia de **La puerta de Brandenburgo** en **Berlin** (_52.5162N 13.3777W_)
 
-#### 9 Request:
+#### 9 etición:
 
 ```bash
 curl -G -X GET \
@@ -572,10 +551,9 @@ curl -G -X GET \
   -d 'coords=52.5162,13.3777'
 ```
 
-#### Response:
+#### Respuesta:
 
-Because of the use of the `options=keyValues`, the response consists of JSON only without the attribute `type` and
-`metadata` elements.
+Debido al uso del modificador `options=keyValues`, la respuesta consta solo de un JSON sin los attributos `type` y sin elementos `metadata`.
 
 ```json
 [
@@ -597,49 +575,42 @@ Because of the use of the `options=keyValues`, the response consists of JSON onl
 ]
 ```
 
-## Next Steps
+## Proximos pasos
 
-Want to learn how to add more complexity to your application by adding advanced features? You can find out by reading
-the other tutorials in this series:
+Quieres aprender como añadir más complejidad a tu aplicación añadiendo funcionalidades avanzadas? Puedes encontrarlas leyendo otros tutoriales de esta misma serie
 
-### Iterative Development
+### Desarrollo iterativo
 
-The context of the store finder demo is very simple, it could easily be expanded to hold the whole of a stock management
-system by passing in the current stock count of each store as context data to the
-[Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/).
+El contexto del ejemplo buscador de tienda es muy simple, se puede ampliar fácilmente para que contenga la totalidad de una gestión stock.
 
-So far, so simple, but consider how this Smart application could be iterated:
+se puede ampliar fácilmente para que contenga el conjunto de un sistema de gestión de existencias pasando el recuento de existencias actual de cada tienda como datos de contexto al sistema, pasando el recuento de existencias actual de cada tienda como datos de contexto al [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/).
 
--   Real-time dashboards could be created to monitor the state of the stock across each store using a visualization
-    component. \[[Wirecloud](https://github.com/FIWARE/catalogue/blob/master/processing/README.md#Wirecloud)\]
--   The current layout of both the warehouse and store could be passed to the context broker so the location of the
-    stock could be displayed on a map
+Hasta aquí, muy sencillo, pero considere los siguientes pasos de esta aplicación Smart:
+
+-   Se pueden crear cuadros de mando en tiempo real para controlar el estado del     stock en cada tienda mediante el componente de visualización
     \[[Wirecloud](https://github.com/FIWARE/catalogue/blob/master/processing/README.md#Wirecloud)\]
--   User Management components \[[Wilma](https://github.com/FIWARE/catalogue/blob/master/security/README.md#Wilma),
+-   La disposición actual tanto del almacén como de la tienda podría pasarse al corredor de contexto para que la ubicación del stock pueda visualizarse en un mapa
+    \[[Wirecloud](https://github.com/FIWARE/catalogue/blob/master/processing/README.md#Wirecloud)\]
+-   Componentes de gestión de usuarios \[[Wilma](https://github.com/FIWARE/catalogue/blob/master/security/README.md#Wilma),
     [AuthZForce](https://github.com/FIWARE/catalogue/blob/master/security/README.md#Authzforce),
-    [Keyrock](https://github.com/FIWARE/catalogue/blob/master/security/README.md#Keyrock)\] could be added so that only
-    store managers are able to change the price of items
--   A threshold alert could be raised in the warehouse as the goods are sold to ensure the shelves are not left empty
+    [Keyrock](https://github.com/FIWARE/catalogue/blob/master/security/README.md#Keyrock)\] pueden ser añadidos, así, sólo los directores de las tiendas pueden cambiar el precio de los artículos.
+-   Se podría activar una alerta de umbral en el almacén a medida que se venden las mercancías para asegurar que las estanterías no se dejen vacías.
     [publish/subscribe function of [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/)]
--   Each generated list of items to be loaded from the warehouse could be calculated to maximize the efficiency of
-    replenishment
+-   Cada lista generada de artículos a ser colocados en el almacén podría ser calculada para maximizar la eficiencia del reabastecimiento
     \[[Complex Event Processing - CEP](https://github.com/FIWARE/catalogue/blob/master/processing/README.md#new-perseo-incubated)\]
--   A motion sensor could be added at the entrance to count the number of customers
+-   Se podría añadir un sensor de movimiento en la entrada para contar el número de clientes
     \[[IDAS](https://github.com/FIWARE/catalogue/blob/master/iot-agents/README.md)\]
--   The motion sensor could ring a bell whenever a customer enters
+-   El sensor de movimiento podría hacer sonar una campana cada vez que un cliente entra
     \[[IDAS](https://github.com/FIWARE/catalogue/blob/master/iot-agents/README.md)\]
--   A series of video cameras could be added to introduce a video feed in each store
+-   Se podría añadir una serie de cámaras de vídeo para introducir una señal de vídeo en cada tienda.
     \[[Kurento](https://github.com/FIWARE/catalogue/blob/master/processing/README.md#Kurento)\]
--   The video images could be processed to recognize where customers are standing within a store
+-   Las imágenes de vídeo podrían ser procesadas para reconocer dónde están los clientes dentro de una tienda
     \[[Kurento](https://github.com/FIWARE/catalogue/blob/master/processing/README.md#Kurento)\]
--   By maintaining and processing historical data within the system, footfall and dwell time can be calculated -
-    establishing which areas of the store attract the most interest \[connection through
-    [Cygnus](https://github.com/FIWARE/catalogue/blob/master/core/README.md#Cygnus) to Apache Flink\]
--   Patterns recognizing unusual behaviour could be used to raise an alert to avoid theft
+-   Al mantener y procesar los datos históricos dentro del sistema, se puede calcular el tiempo de permanencia y por donde transitan - estableciendo qué áreas de la tienda son de mayor interés [conexión a través de 
+    [Cygnus](https://github.com/FIWARE/catalogue/blob/master/core/README.md#Cygnus) o Apache Nifi\]
+-   El reconocimiento de patrones de comportamientos inusuales pueden ser utilizados para disparar una alerta para evitar el robo
     \[[Kurento](https://github.com/FIWARE/catalogue/blob/master/processing/README.md#Kurento)\]
--   Data on the movement of crowds would be useful for scientific research - data about the state of the store could be
-    published externally.
+-   Los datos sobre el movimiento de las multitudes serían útiles para la investigación científica - los datos sobre el estado de la tienda podrían ser publicados externamente
     \[[extensions to CKAN](https://github.com/FIWARE/catalogue/tree/master/data-publication#extensions-to-ckan)\]
 
-Each iteration adds value to the solution through existing components with standard interfaces and therefore minimizes
-development time.
+Cada iteración añade valor a la solución a través de los componentes existentes con interfaces estándar y, por lo tanto, minimiza el tiempo de desarrollo.
